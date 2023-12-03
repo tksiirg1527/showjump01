@@ -1,10 +1,10 @@
-var canvas, g;
-var player, enemy, particles, moon, castle;
-var score;
-var scene;
-var frameCount;
-var bound;
-var next;
+let canvas, g;
+let player, enemy, particles, moon, castle;
+let score;
+let scene;
+let frameCount;
+let bound;
+let next;
 // シーンの定義
 const Scenes = {
   GameMain: 'GameMain',
@@ -13,8 +13,8 @@ const Scenes = {
 
 onload = function () {
   // 描画コンテキストの取得
-  canvas = document.getElementById("gamecanvas");
-  g = canvas.getContext("2d");
+  canvas = document.getElementById('gamecanvas');
+  g = canvas.getContext('2d');
   // 初期化
   init();
   // 入力処理の指定
@@ -25,7 +25,7 @@ onload = function () {
   document.ontouchstart = keydown;
   document.ontouchend = keyup;
   // ゲームループの設定 60FPS
-  setInterval("gameloop()", 16);
+  setInterval('gameloop()', 16);
 };
 
 function init() {
@@ -60,7 +60,7 @@ function init() {
   scene = Scenes.GameMain;
 }
 
-var isKeyDown = false;
+let isKeyDown = false;
 function keydown(e) {
   // ゲームプレイ中
   if (scene === Scenes.GameMain) {
@@ -180,16 +180,16 @@ function draw() {
 // 当たり判定
 function hitCheck() {
   enemy.forEach((e) => {
-    var diffX = player.posx - e.posx;
-    var diffY = player.posy - e.posy;
-    var distance = Math.sqrt(diffX * diffX + diffY * diffY);
+    let diffX = player.posx - e.posx;
+    let diffY = player.posy - e.posy;
+    let distance = Math.sqrt(diffX * diffX + diffY * diffY);
     if (distance < player.r + e.r) {
       // 当たった時の処理
       scene = Scenes.GameOver;
       frameCount = 0;
 
       // パーティクル生成
-      for (var i = 0; i < 300; i++) {
+      for (let i = 0; i < 300; i++) {
         particles.push(new Particle(player.posx, player.posy));
       }
     }
@@ -198,7 +198,7 @@ function hitCheck() {
 
 // 敵キャラ生成
 function generateNextEnemy() {
-  var newEnemy = new Enemy(
+  let newEnemy = new Enemy(
     600,
     400 - (Math.random() < 0.5 ? 0 : 50),
     12,
@@ -212,10 +212,10 @@ function generateNextEnemy() {
 
 // 背景の描画
 function drawBack(g) {
-  var interval = 16;
-  var ratio = 5;
-  var center = 240;
-  var baseLine = 360;
+  let interval = 16;
+  let ratio = 5;
+  let center = 240;
+  let baseLine = 360;
   // 画面を黒く塗りつぶして初期化する
   g.fillStyle = 'rgb(0,0,0)';
   g.fillRect(0, 0, 480, 480);
@@ -223,9 +223,9 @@ function drawBack(g) {
   moon.draw(g);
   castle.draw(g);
   // 地面のラインアート
-  for (var i = 0; i < 480 / interval + 1; i++) {
-    var x1 = i * interval - (frameCount % interval);
-    var x2 = center + (x1 - center) * ratio;
+  for (let i = 0; i < 480 / interval + 1; i++) {
+    let x1 = i * interval - (frameCount % interval);
+    let x2 = center + (x1 - center) * ratio;
     g.strokeStyle = '#98660b';
     g.lineWidth = 2;
     g.beginPath();
@@ -239,16 +239,16 @@ function drawBack(g) {
 function drawScore(g) {
   g.fillStyle = 'rgb(255,255,255)';
   g.font = '16pt Arial';
-  var scoreLabel = 'SCORE :' + score;
-  var scoreLabelWidth = g.measureText(scoreLabel).width;
+  let scoreLabel = 'SCORE :' + score;
+  let scoreLabelWidth = g.measureText(scoreLabel).width;
   g.fillText(scoreLabel, 460 - scoreLabelWidth, 40);
 }
 
 // ゲームオーバー表示
 function drawGameOver(g) {
   g.font = 'bold 48pt Arial';
-  var scoreLabel = 'GAME OVER';
-  var scoreLabelWidth = g.measureText(scoreLabel).width;
+  let scoreLabel = 'GAME OVER';
+  let scoreLabelWidth = g.measureText(scoreLabel).width;
   g.fillStyle = 'rgb(255,255,255)';
   g.fillText(scoreLabel, 240 - scoreLabelWidth / 2, 220);
 }
@@ -337,7 +337,7 @@ class Particle extends Sprite {
     this.posy = y;
     this.baseLine = 420;
     this.acceleration = 0.5;
-    var angle = (Math.PI * 5) / 4 + (Math.PI / 2) * Math.random();
+    let angle = (Math.PI * 5) / 4 + (Math.PI / 2) * Math.random();
     this.speed = 5 + Math.random() * 20;
     this.speedx = this.speed * Math.cos(angle);
     this.speedy = this.speed * Math.sin(angle);
