@@ -22,6 +22,8 @@ onload = function () {
   document.onkeyup = keyup;
   document.onmousedown = keydown;
   document.onmouseup = keyup;
+  document.ontouchstart = keydown;
+  document.ontouchend = keyup;
   // ゲームループの設定 60FPS
   setInterval("gameloop()", 16);
 };
