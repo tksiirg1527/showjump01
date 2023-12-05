@@ -1,9 +1,10 @@
 let canvas, g;
-let player, enemy, particles, moon, castle;
+let player, enemy, moon, castle;
+// let particles;
 let score;
 let scene;
 let frameCount;
-let bound;
+let boundx, boundy;
 let next;
 // シーンの定義
 const Scenes = {
@@ -50,13 +51,13 @@ function init() {
   castle.image = new Image();
   castle.image.src = './showcastle.png';
 
-  // パーティクル初期化
-  particles = [];
+  // // パーティクル初期化
+  // particles = [];
 
   // ゲーム管理データの初期化
   score = 0;
   frameCount = 0;
-  bound = false;
+  boundx = false;
   scene = Scenes.GameMain;
 }
 
@@ -116,10 +117,36 @@ function update() {
 
     // ゲームオーバー中
   } else if (scene === Scenes.GameOver) {
-    // パーティクルの状態更新
-    particles.forEach((p) => {
-      p.update();
-    });
+    // // パーティクルの状態更新
+    // particles.forEach((p) => {
+    //   p.update();
+    // });
+
+    // 自キャラの状態更新(ふっとび)
+    player.speed = player.speed + player.acceleration;
+    player.posy = player.posy + player.speed;
+
+    if (player.posx < 40 || player.posx > 440) {
+      boundx = !boundx;
+    }
+    if (boundx) {
+      player.posx = player.posx + 20;
+    } else {
+      player.posx = player.posx - 20;
+    }
+
+
+
+    if (player.posy < 40 || player.posy > 440) {
+      boundy = !boundy;
+    }
+    if (boundy) {
+      player.posy = player.posy + 10;
+    } else {
+      player.posy = player.posy - 10;
+    }
+
+
 
     // 敵キャラの状態更新
     enemy.forEach((e) => {
@@ -159,10 +186,25 @@ function draw() {
     // 背景描画
     drawBack(g);
 
-    // パーティクル描画
-    particles.forEach((p) => {
-      p.draw(g);
-    });
+    // // パーティクル描画
+    // particles.forEach((p) => {
+    //   p.draw(g);
+    // });
+
+    //キャラクタ描画(ふっとび)
+    if (frameCount < 120) {
+      g.save();
+      g.translate(player.posx, player.posy);
+      g.rotate(((frameCount % 30) * Math.PI * 2) / 30);
+      g.drawImage(
+        player.image,
+        -player.image.width / 2,
+        -player.image.height / 2,
+        player.image.width + frameCount,
+        player.image.height + frameCount
+      );
+      g.restore();
+    }
 
     // 敵キャラクタ描画
     enemy.forEach((e) => {
@@ -187,11 +229,14 @@ function hitCheck() {
       // 当たった時の処理
       scene = Scenes.GameOver;
       frameCount = 0;
+      player.speed = 0;
+      // player.speed = -20;
+      player.acceleration = 0;
 
-      // パーティクル生成
-      for (let i = 0; i < 300; i++) {
-        particles.push(new Particle(player.posx, player.posy));
-      }
+      // // パーティクル生成
+      // for (let i = 0; i < 300; i++) {
+      //   particles.push(new Particle(player.posx, player.posy));
+      // }
     }
   });
 }
@@ -325,38 +370,38 @@ class Enemy extends Sprite {
   }
 }
 
-// パーティクルクラス
-class Particle extends Sprite {
-  baseLine = 0;
-  speedy = 0;
-  speedx = 0;
+// // パーティクルクラス
+// class Particle extends Sprite {
+//   baseLine = 0;
+//   speedy = 0;
+//   speedx = 0;
 
-  constructor(x, y) {
-    super();
-    this.posx = x;
-    this.posy = y;
-    this.baseLine = 420;
-    this.acceleration = 0.5;
-    let angle = (Math.PI * 5) / 4 + (Math.PI / 2) * Math.random();
-    this.speed = 5 + Math.random() * 20;
-    this.speedx = this.speed * Math.cos(angle);
-    this.speedy = this.speed * Math.sin(angle);
-    this.r = 2;
-  }
+//   constructor(x, y) {
+//     super();
+//     this.posx = x;
+//     this.posy = y;
+//     this.baseLine = 420;
+//     this.acceleration = 0.5;
+//     let angle = (Math.PI * 5) / 4 + (Math.PI / 2) * Math.random();
+//     this.speed = 5 + Math.random() * 20;
+//     this.speedx = this.speed * Math.cos(angle);
+//     this.speedy = this.speed * Math.sin(angle);
+//     this.r = 2;
+//   }
 
-  update() {
-    this.speedx *= 0.97;
-    this.speedy += this.acceleration;
-    this.posx += this.speedx - 2;
-    this.posy += this.speedy;
-    if (this.posy > this.baseLine) {
-      this.posy = this.baseLine;
-      this.speedy = this.speedy * -1 * (Math.random() * 0.5 + 0.3);
-    }
-  }
+//   update() {
+//     this.speedx *= 0.97;
+//     this.speedy += this.acceleration;
+//     this.posx += this.speedx - 2;
+//     this.posy += this.speedy;
+//     if (this.posy > this.baseLine) {
+//       this.posy = this.baseLine;
+//       this.speedy = this.speedy * -1 * (Math.random() * 0.5 + 0.3);
+//     }
+//   }
 
-  draw(g) {
-    g.fillStyle = 'rgb(255,50,50)';
-    g.fillRect(this.posx - this.r, this.posy - this.r, this.r * 2, this.r * 2);
-  }
-}
+//   draw(g) {
+//     g.fillStyle = 'rgb(255,50,50)';
+//     g.fillRect(this.posx - this.r, this.posy - this.r, this.r * 2, this.r * 2);
+//   }
+// }
